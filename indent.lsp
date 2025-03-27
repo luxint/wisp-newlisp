@@ -126,7 +126,7 @@
   (pop *txt* 0 ind)
   (while (not (empty? *txt*))
     (setq res (or (dolist (pat compiled (regex pat *txt* 0x10000)))
-                  (list (txt 0) 0 1)))
+                  (list (*txt* 0) 0 1)))
     (if (= (res 0) "{")
       (setq res (get-bstr)))  ; {} bracketed string can be balanced inside, no easy regex so special function
     (cond 
