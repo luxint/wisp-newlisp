@@ -34,10 +34,10 @@ start every function definition on line position 0 and don't put any
 empty lines within a function definition.
 
 You can add inline comments like in newlisp, but whole line comments 
-should start at position 0 and are not allowed within a function. You can stil use parenthesis inline 
+should start at position 0 and are not allowed within a function. You can stil use parentheses inline 
 but they should balanced per line. 
 
 You can also use dots (.) inline as 
-left parens but always in combination with colons (:)
+right parenthesis but always in combination with colons (:)
 
 Multi line strings/quoted expressions are not (yet) supported, put them on one line.
