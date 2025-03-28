@@ -121,7 +121,7 @@
   (join result "\n"))
 
 (define (parse-txt *txt* , (result '()) (line '()))
-  (setq compiled (map regex-comp '({^".*"} "^[;|#].*" "^: " "^. ")))
+  (setq compiled (map regex-comp '({^".*"} "^[;|#].*" "^: " {^[^ ]\. } "^. ")))
   (setq ind (get-ind))
   (pop *txt* 0 ind)
   (while (not (empty? *txt*))
