@@ -29,8 +29,7 @@
 ;; Right parenthesis are automatically added, based on indentation.
 ;; Indent with spaces, tabs are not allowed.(most editors can automatically convert tabs to spaces).
 
-;; Before and after every function definition put an empty line, 
-;; start every function definition on line position 0 and don't put any 
+;; Start every function definition on line position 0 and don't put any 
 ;; empty lines within a function definition.
 
 ;; You can add inline comments like in newlisp, but whole line comments 
