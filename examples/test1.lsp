@@ -19,10 +19,7 @@
           (fn (y) (+ x (swap y x)))
           n)))
 
-; transpile newlisp to indent
-
-; if we exclude comments we could use read-expr
-; lets add new line after first nested list.
+;TODO  transpile newlisp to indent 
 
 
 (define (get-offset)
@@ -33,23 +30,29 @@
     offset))
 
 
-(define (read-all-expr file result "")
+(define (read-all-expr file (result ""))
   (letn (src (read-file file) len (length src))
     (setq expr (read-expr src))
-    (do-while (< $count len)
-      (extend expr (read-expr src)))
+    ;|# catch 
+    ;|#   do-while : < $count len
+    ;|#     if : read-expr src 'MAIN 'err $count
+    ;|#       extend expr $it
+    ;|#       throw expr
+    ;|#   . 'err
     expr))
 
-(define (emit-expr expr lvl (*result* "")(start true) , (ind 2) )
+(define (emit-expr expr (lvl 0)  )
   (dolist (x expr)
     (cond
       ((list? x)
-        (extend *result* 
-          (if start ":" "\n")
-          (emit-expr (x (+ 1 lvl)   ))
-          "."))
+        (extend result (string "\n" (dup "  " lvl)))
+        (emit-expr x (+ 1 lvl)  ))
       ((string? x)
-        (extend result)))))
+        (extend result (string { "} x {" })))
+      (true
+        (extend result (string " " x " ")))))
+  result)
+
 
 
 
