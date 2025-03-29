@@ -111,7 +111,7 @@
           ((= next lvl)
             (setq rp bal))
           (true 
-            (setq pb (drop stack next))
+            (setq pb (drop stack next (+ 1 $idx)))
             (setq rp (+ bal (- balance pb)))
             (setq balance pb)))
         (if (< rp 0)
@@ -121,6 +121,7 @@
 
 (define (parse-txt *txt* , (result '()) (line '()))
   (setq compiled (map regex-comp '({^".*"} "^[;|#].*" "^: " {^[^ ]\. } "^. ")))
+  (setq *ln* 1)
   (setq ind (get-ind))
   (pop *txt* 0 ind)
   (while (not (empty? *txt*))
@@ -130,15 +131,16 @@
       (setq res (get-bstr)))  ; {} bracketed string can be balanced inside, no easy regex so special function
     (cond 
       ((= (res 0) "\n")
-        (push (cons ind line) result -1)
+        (push (cons (if line ind 0) line) result -1)
         (setq line '())
+        (inc *ln*)
         (pop *txt*)
         (setq ind (get-ind))
         (pop *txt* 0 ind))
       (true
         (push (res 0) line -1)
         (pop *txt* 0 (res 2)))))
-  (push (cons ind line) result -1)
+  (push (cons (if line ind 0) line) result -1)
   result)
 
 (setq ind-pat (regex-comp {^[ |\t][ |\t]*} ))
@@ -146,7 +148,7 @@
 (define (get-ind)
   (let (ind (regex ind-pat *txt* 0x10000))
     (when (and ind (find "\t" (ind 0))) 
-      (throw-error "Tabs are not supported, use spaces."))
+      (throw-error (string "Tabs are not supported, use spaces, line: " *ln*)))
     (if ind (ind 2) 0)))
 
 
@@ -160,7 +162,7 @@
                   (throw (+ 1 $idx))))))
    (if idx
     (list (0 idx *txt*) 0 idx)
-    (throw-error "unbalanced brackets in {} string"))   
+    (throw-error (string "Unbalanced brackets in {} string, line: " *ln*)))   
   )
 
 (define (make-line line lvl)
@@ -185,18 +187,18 @@
       (push ". " line -1)))
   (list comment line))
 
-(define (drop stack lvl)
+(define (drop stack lvl ln)
   (if (not stack)
-    (throw-error "incorrect indentation"))
+    (throw-error (string "incorrect indentation, line: " ln)))
   (let (top (first stack))
     (cond 
       ((= (top 0) lvl)
       (top 1))
       ((> (top 0) lvl)
         (pop stack)
-        (drop stack lvl))
+        (drop stack lvl ln))
       (true
-        (throw-error "incorrect indentation")))))
+        (throw-error (string "incorrect indentation, line: " ln))))))
 
 
 

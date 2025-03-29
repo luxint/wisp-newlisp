@@ -18,3 +18,36 @@ define : fibogen n
     series x 
           fn (y) : + x : swap y x
           . n
+
+;TODO  transpile newlisp to indent 
+
+
+define : get-offset
+  let :  offset 0 range : - : length *result*
+    unless : empty? *result*
+      for : x -1 range -1 : = "\n" : *result* x
+        inc offset
+    . offset
+
+
+define : read-all-expr file result ""
+  letn : src (read-file file) len (length src)
+    setq expr : read-expr src
+    do-while : < $count len
+      extend expr : read-expr src MAIN nil $count
+    . expr
+
+define : emit-expr expr lvl (*result* "")(start true) , (ind 2) 
+  dolist : x expr
+    cond
+      : list? x
+        extend *result* 
+          if start ":" "\n"
+          emit-expr : x (+ 1 lvl)   
+          . "."
+      : string? x
+        extend result
+          
+   
+
+
